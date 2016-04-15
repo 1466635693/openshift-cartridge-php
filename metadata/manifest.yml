@@ -1,0 +1,23 @@
+Name: php
+Cartridge-Short-Name: PHP
+Display-Name: PHP 7.0
+License: MIT
+Version: "7.0"
+Versions: [ "7.0.5" ]
+Website: https://github.com/jogolor/openshift-cartridge-php
+Cartridge-Version: 0.0.1
+Cartridge-Vendor: jogolor
+Categories:
+  - embedded
+  - plugin
+Provides:
+  - php-7.0
+  - php-fpm
+  - php
+Scaling:
+  Min: 1
+  Max: -1
+Group-Overrides:
+  - components:
+    - php-7.0
+    - web_framework

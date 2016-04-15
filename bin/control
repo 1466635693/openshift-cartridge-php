@@ -1,0 +1,130 @@
+#!/bin/bash
+set -e
+
+source ${OPENSHIFT_CARTRIDGE_SDK_BASH}
+source ${OPENSHIFT_PHP_DIR}/lib/util
+
+export STOPTIMEOUT=20
+
+PHP_FPM_EXEC=${OPENSHIFT_PHP_VERSION_DIR}/sbin/php-fpm
+PHP_FPM_PID=${OPENSHIFT_PHP_DIR}/pid/php-fpm-${OPENSHIFT_GEAR_UUID}.pid
+
+function _is_running() {
+    if [ -f "${PHP_FPM_PID}" ]; then
+        local pid=`cat ${PHP_FPM_PID} 2> /dev/null`
+        [ -z "${pid}" ]  &&  return 1
+
+        local current_user=`id -u`
+        if `ps --pid ${pid} > /dev/null 2>&1` || \
+           `pgrep -x php-fpm -u ${current_user} > /dev/null 2>&1`; then
+            return 0
+        fi
+    fi
+    return 1
+}
+
+function start() {
+    config
+
+    if [ ${CONFIGURATION_DIRTY} -eq 1 ]; then
+        stop
+    fi
+
+    if ! _is_running; then
+
+        # Start php fpm
+        ${PHP_FPM_EXEC} \
+            --php-ini "${OPENSHIFT_PHP_DIR}/conf/php-fpm.ini" \
+            --fpm-config "${OPENSHIFT_PHP_DIR}/conf/php-fpm.conf" \
+            --prefix "${OPENSHIFT_PHP_DIR}"
+
+        _is_running && echo "PHP-FPM instance is started"
+    else
+        echo "PHP-FPM already running" 1>&2
+    fi
+}
+
+
+function stop() {
+    [ -f "${PHP_FPM_PID}" ] && pid=$( /bin/cat "${PHP_FPM_PID}" )
+    if `ps -p ${pid} > /dev/null 2>&1`; then
+        /bin/kill ${pid}
+        ret=$?
+        if [ ${ret} -eq 0 ]; then
+            TIMEOUT="${STOPTIMEOUT}"
+            while [ ${TIMEOUT} -gt 0 ] && [ -f "${PHP_FPM_PID}" ]; do
+                /bin/kill -0 "${pid}" >/dev/null 2>&1 || break
+                sleep .5
+                let TIMEOUT=${TIMEOUT}-1
+            done
+        fi
+    else
+        if `pgrep -x php-fpm > /dev/null 2>&1`
+        then
+            echo "Warning: PHP-FPM process exists without a pid file.  Use force-stop to kill." 1>&2
+        else
+            echo "PHP-FPM already stopped" 1>&2
+        fi
+    fi
+
+    ! _is_running && echo "PHP-FPM instance is stopped"
+}
+
+function restart() {
+    stop
+    start
+}
+
+function reload() {
+    stop
+    build
+    start
+}
+
+function status() {
+    if _is_running; then
+        client_result "PHP-FPM is running"
+    else
+        client_result "PHP-FPM is stopped"
+    fi
+}
+
+function build() {
+    # Stop fpm if running
+    if _is_running; then
+        stop
+    fi
+
+    # Update configuration
+    config
+
+    # Install pecl
+    PECL_FILE=${OPENSHIFT_REPO_DIR}/.openshift/php-pecl.txt
+    if [ -f ${PECL_FILE} ]; then
+        OLDIFS=$IFS
+        IFS=$'\n'
+        for pecl in $(cat ${PECL_FILE}); do
+            if [ ! -z ${pecl} ]; then
+                IFS=' ' read -a pecl_args <<< "${pecl}"
+                ${OPENSHIFT_PHP_DIR}/bin/install_pecl "${pecl_args[0]}" "${pecl_args[1]}" "${pecl_args[2]}"
+            fi
+        done
+        IFS=${OLDIFS}
+    fi
+
+    # Composer self-update
+    COMPOSER_PATH=${PHP_VERSION_DIR}/bin/composer
+    if [ -f "${COMPOSER_PATH}" ]; then
+        ${COMPOSER_PATH} self-update
+    fi
+}
+
+case "$1" in
+  start)     start ;;
+  stop)      stop ;;
+  restart)   restart ;;
+  status)    status ;;
+  reload)    reload ;;
+  build)     build ;;
+  *)         exit 0
+esac
