@@ -126,7 +126,7 @@ for version in $(cat versions); do
 
         # Compress
         pushd ${ROOT_DIR}
-        cp -R ext php-${version}/
+        mv ext php-${version}/
         mkdir compile
         find ${CURRENT_DIR} -maxdepth 1 -type f -exec cp -f {} compile/ \;
         tar -zcvf "${OPENSHIFT_REPO_DIR}/public/php-${version}.tar.gz" php-${version} compile
