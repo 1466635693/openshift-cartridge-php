@@ -6,8 +6,6 @@ PHP-FPM support is enabled.
 
 Fast-CGI support is enabled & CGI support is disabled. 
 
-FILEINFO support is disabled to compile PHP 7 on Openshift SMALL gears.
-
 MYSQLND support is enabled to support PHP 7.
 
 Currently this cartridge works well [jogolor's NGINX cartridge](https://github.com/jogolor/openshift-cartridge-nginx), which is from [boekkooi's Openshift Nginx cartridge](https://github.com/boekkooi/openshift-cartridge-nginx).
@@ -18,14 +16,14 @@ rhc cartridge add -a myapp http://cartreflect-claytondev.rhcloud.com/github/jogo
 ```
 This will add the latest PHP 7.x.x version to your application.
 
-If you want to install a specific PHP version you can add `--env OPENSHIFT_PHP_VERSION=<version>` to the command. For example to install PHP 7.0.5 you can use:
+If you want to install a specific PHP version you can add `--env OPENSHIFT_PHP_VERSION=<version>` to the command. For example to install PHP 7.0.6 you can use:
 ```BASH
-rhc cartridge add -a myapp --env OPENSHIFT_PHP_VERSION=7.0.5 http://cartreflect-claytondev.rhcloud.com/github/jogolor/openshift-cartridge-php
+rhc cartridge add -a myapp --env OPENSHIFT_PHP_VERSION=7.0.6 http://cartreflect-claytondev.rhcloud.com/github/jogolor/openshift-cartridge-php
 ```
 
 ## Versions
 Currently this cartridge has the following versions:
-- PHP 7.0.5
+- PHP 7.0.6
 
 ## Configuration
 - Pass PHP scripts to PHP-FPM
@@ -88,6 +86,8 @@ rhc create-app nginx http://cartreflect-claytondev.rhcloud.com/github/jogolor/op
 - Set the versions you need to compile in `php/compile/versions`.
 - Optional: Modify the versions of the dependent liberaries  as you need in `php/compile/libs`.
 - Optional: Modify the configuration arguments as you need in `php/compile/php`.
+
+Note: FILEINFO support should be disabled to compile PHP 7 on Openshift SMALL gears.
 - Commit and push the repo of your application.
 - SSH into you application and run the following commands:
 ```BASH
@@ -122,5 +122,5 @@ rhc cartridge add -a myapp http://cartreflect-claytondev.rhcloud.com/github/jogo
 ```
 This will remove the old version and install the latest version. If these fail, try again adding `--env OPENSHIFT_PHP_VERSION=<version>` to the command. For example:
 ```BASH
-rhc cartridge add -a myapp --env OPENSHIFT_PHP_VERSION=7.0.5 http://cartreflect-claytondev.rhcloud.com/github/jogolor/openshift-cartridge-php
+rhc cartridge add -a myapp --env OPENSHIFT_PHP_VERSION=7.0.6 http://cartreflect-claytondev.rhcloud.com/github/jogolor/openshift-cartridge-php
 ```
