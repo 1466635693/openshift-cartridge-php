@@ -3,9 +3,9 @@ Cartridge-Short-Name: PHP
 Display-Name: PHP 7.0
 License: MIT
 Version: "7.0"
-Versions: [ "7.0.5" ]
+Versions: [ "7.0.6" ]
 Website: https://github.com/jogolor/openshift-cartridge-php
-Cartridge-Version: 0.0.1
+Cartridge-Version: 0.0.2
 Cartridge-Vendor: jogolor
 Categories:
   - embedded
