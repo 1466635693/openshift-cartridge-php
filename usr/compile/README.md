@@ -9,6 +9,8 @@ rhc create-app nginx http://cartreflect-claytondev.rhcloud.com/github/jogolor/op
 - Set the versions you need to compile in `php/compile/versions`.
 - Optional: Modify the versions of the dependent liberaries  as you need in `php/compile/libs`.
 - Optional: Modify the configuration arguments as you need in `php/compile/php`.
+
+Note: FILEINFO support should be disabled to compile PHP 7 on Openshift SMALL gears.
 - Commit and push the repo of your application.
 - SSH into you application and run the following commands:
 ```BASH

@@ -74,7 +74,7 @@ function install_php() {
         --enable-sysvmsg \
         --enable-wddx \
         --enable-opcache \
-        --disable-fileinfo
+        --enable-fileinfo
 
     echo "Compiling PHP."
     make install
