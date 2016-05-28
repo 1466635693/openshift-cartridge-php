@@ -16,14 +16,14 @@ rhc cartridge add -a myapp http://cartreflect-claytondev.rhcloud.com/github/jogo
 ```
 This will add the latest PHP 7.x.x version to your application.
 
-If you want to install a specific PHP version you can add `--env OPENSHIFT_PHP_VERSION=<version>` to the command. For example to install PHP 7.0.6 you can use:
+If you want to install a specific PHP version you can add `--env OPENSHIFT_PHP_VERSION=<version>` to the command. For example to install PHP 7.0.7 you can use:
 ```BASH
-rhc cartridge add -a myapp --env OPENSHIFT_PHP_VERSION=7.0.6 http://cartreflect-claytondev.rhcloud.com/github/jogolor/openshift-cartridge-php
+rhc cartridge add -a myapp --env OPENSHIFT_PHP_VERSION=7.0.7 http://cartreflect-claytondev.rhcloud.com/github/jogolor/openshift-cartridge-php
 ```
 
 ## Versions
 Currently this cartridge has the following versions:
-- PHP 7.0.6
+- PHP 7.0.7
 
 ## Configuration
 - Pass PHP scripts to PHP-FPM
@@ -122,5 +122,5 @@ rhc cartridge add -a myapp http://cartreflect-claytondev.rhcloud.com/github/jogo
 ```
 This will remove the old version and install the latest version. If these fail, try again adding `--env OPENSHIFT_PHP_VERSION=<version>` to the command. For example:
 ```BASH
-rhc cartridge add -a myapp --env OPENSHIFT_PHP_VERSION=7.0.6 http://cartreflect-claytondev.rhcloud.com/github/jogolor/openshift-cartridge-php
+rhc cartridge add -a myapp --env OPENSHIFT_PHP_VERSION=7.0.7 http://cartreflect-claytondev.rhcloud.com/github/jogolor/openshift-cartridge-php
 ```
